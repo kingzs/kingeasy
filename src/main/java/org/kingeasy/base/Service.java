@@ -22,7 +22,7 @@ public class Service {
 		
 		StringBuffer columnNames = new StringBuffer(), placeholder = new StringBuffer();
 		List<Object> fieldValueList = new ArrayList<Object>();
-		aClass.getColumnAsFieldMap().forEach((fieldName, columnName) -> {
+		aClass.getFieldColumnMap().forEach((fieldName, columnName) -> {
 			Object fieldValue = KingUtils.getValue(obj, fieldName);
 			if(!KingUtils.empty(fieldValue)){
 				columnNames.append("," + columnName);
@@ -45,7 +45,7 @@ public class Service {
 		
 		StringBuffer columnNames = new StringBuffer();
 		List<Object> fieldValueList = new ArrayList<Object>();
-		aClass.getModifiableField().forEach((fieldName) -> {
+		aClass.getModifiableFieldSet().forEach((fieldName) -> {
 			Object fieldValue = KingUtils.getValue(obj, fieldName);
 			columnNames.append(","+aClass.getColumnName(fieldName)+"=?");
 			fieldValueList.add(fieldValue);
@@ -104,7 +104,7 @@ public class Service {
 		ConditionAndValue cav = new ConditionAndValue(paramMap, clazz);
 		
 		String tableFrom = aClass.getTableName() + " t0";
-		for(Map.Entry<String, MapClass> entry : aClass.getInnerClassMap().entrySet()){
+		for(Map.Entry<String, MapClass> entry : aClass.getMapClassMap().entrySet()){
 			MapClass innerClass = entry.getValue();
 			String fieldName = entry.getKey();
 			int index = aClass.getTableIndex(fieldName);
@@ -117,7 +117,7 @@ public class Service {
 		}
 		
 		StringBuffer columnNameBuffer = new StringBuffer();
-		aClass.getFieldAsColumnMap().forEach((columnName, fieldName) -> {
+		aClass.getColumnFieldMap().forEach((columnName, fieldName) -> {
 			columnNameBuffer.append(",t0."+columnName);
 		});
 		
@@ -164,7 +164,7 @@ public class Service {
 		AnalysisClass aClass = Domain.getAnalysisClass(clazz);
 		
 		StringBuffer columnNameBuffer = new StringBuffer();
-		aClass.getFieldAsColumnMap().forEach((columnName, fieldName) -> {
+		aClass.getColumnFieldMap().forEach((columnName, fieldName) -> {
 			columnNameBuffer.append(","+columnName);
 		});
 		
@@ -287,7 +287,7 @@ public class Service {
 			AnalysisClass oClass = Domain.getAnalysisClass(type);
 			
 			StringBuffer columnNameBuffer = new StringBuffer();
-			oClass.getFieldAsColumnMap().forEach((cName, fName) -> {
+			oClass.getColumnFieldMap().forEach((cName, fName) -> {
 				columnNameBuffer.append(",t0."+cName);
 			});
 			
