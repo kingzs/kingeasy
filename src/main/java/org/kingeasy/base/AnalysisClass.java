@@ -149,7 +149,8 @@ public class AnalysisClass {
 			if(field.isAnnotationPresent(NoRepeat.class)){
 				noRepeatMap.put(fieldName, field.getDeclaredAnnotation(NoRepeat.class).value());
 			}
-			if(!field.isAnnotationPresent(Immutable.class) && !field.isAnnotationPresent(PrimaryKey.class)){
+			if(!field.isAnnotationPresent(Immutable.class) && !field.isAnnotationPresent(PrimaryKey.class) && 
+					!field.isAnnotationPresent(Mapping.class)){
 				modifiableField.add(fieldName);
 			}
 			if(field.isAnnotationPresent(NoDeletion.class)){

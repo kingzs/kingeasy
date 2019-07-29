@@ -17,7 +17,7 @@ public class Service {
 	
 	public static boolean flag = false;
 	
-	public int save(Object obj) throws KingException {
+	public Object save(Object obj) throws KingException {
 		AnalysisClass aClass = testRepeat(obj);
 		
 		StringBuffer columnNames = new StringBuffer(), placeholder = new StringBuffer();
@@ -37,10 +37,10 @@ public class Service {
 		KData kData = new KData();
 		int id = kData.executeUpdate(sql, fieldValueList);
 		kData.close();
-		return id;
+		return search(id, obj.getClass());
 	}
 	
-	public int update(Object obj) throws KingException {
+	public Object update(Object obj) throws KingException {
 		AnalysisClass aClass = testRepeat(obj);
 		
 		StringBuffer columnNames = new StringBuffer();
@@ -58,7 +58,11 @@ public class Service {
 		KData kData = new KData(sql, fieldValueList);
 		int num = kData.executeUpdate();
 		kData.close();
-		return num;	
+		if(num>0){
+			return search(KingUtils.getValue(obj, aClass.getPrimaryKey()), obj.getClass());	
+		}else{
+			return null;
+		}
 	}
 	
 	public int delete(Object obj) throws KingException {
@@ -150,9 +154,9 @@ public class Service {
 			
 			return list;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new KingRuntimeException(e);
 		}catch(InstantiationException | IllegalAccessException e){
-			throw new RuntimeException(e);
+			throw new KingRuntimeException(e);
 		}finally{
 			if(kData != null){
 				kData.close();
