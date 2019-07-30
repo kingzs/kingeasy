@@ -26,7 +26,7 @@ import org.kingeasy.base.TableRelation;
  * 即：king.test.entry.Goods
  * 当然，这个注解不是必须的，如果没有加这个注解，则默认为类的简要名称，即goods，不区分大小写
  */
-@RoadMapping("goods")
+@RoadMapping("product")
 
 /**
  * 表名注解

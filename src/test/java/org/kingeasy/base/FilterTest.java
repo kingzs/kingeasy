@@ -17,23 +17,24 @@ public class FilterTest {
 
 	public static void main(String[] args) {
 		Map<String, String[]> map = new HashMap<String, String[]>();
-		Domain.setRoadAsClass(new AnnotationScanner().scan("king.test.entry"));
+		Domain.setRoadAsClass(new AnnotationScanner("king.test.entry").getRoadAsClassMap());
 		Map<String, String> methodMap = new HashMap<String, String>();
 		methodMap.put("save", "save");
 		methodMap.put("search", "search");
 		Domain.setMethodMap(methodMap);
 		
 		map.put("{\"name\":\"商品124\",\"image_addr\":\"image1.jpg\",\"price\":3.43,\"stock\":334}", null);
-		String uri = "/goods/save";
+		String uri = "/product/save";
 		filter(uri, map);
 		map.clear();
 		
-		map.put("minStock", new String[]{"150"});
-		uri = "/goods/search";
+		map.put("minStock", new String[]{"10"});
+		uri = "/product/search";
 		filter(uri, map);
 	}
 	
 	public static void filter(String uri, Map<String, String[]> map){
+		Service service = Domain.getService();
 		if((uri.length() - uri.replace("/", "").length()) > 1){
 			int index = uri.lastIndexOf("/");
 			String methodKey = uri.substring(index+1);
@@ -71,9 +72,9 @@ public class FilterTest {
 				
 				try {
 					if(kind){
-						System.out.println(mapper.writeValueAsString(method.invoke(null, paramMap, clazz)));
+						System.out.println(mapper.writeValueAsString(method.invoke(service, paramMap, clazz)));
 					}else{
-						System.out.println(mapper.writeValueAsString(method.invoke(null, obj)));
+						System.out.println(mapper.writeValueAsString(method.invoke(service, obj)));
 					}
 				} catch(JsonProcessingException e1){
 					e1.printStackTrace();

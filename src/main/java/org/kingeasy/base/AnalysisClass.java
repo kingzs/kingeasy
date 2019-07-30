@@ -53,31 +53,31 @@ public class AnalysisClass {
 	 * 如果字段名没有添加这个注解，则键和值都为字段名，存入fieldColumnMap中
 	 * 同时，@PrimaryKey注解的映射，也会存入这个map中
 	 */
-	private Map<String, String> fieldColumnMap = new HashMap<String, String>();
+	private Map<String, String> fieldColumnMap = new HashMap<>();
 	
 	/**
 	 * 表的列名与类的字段名的映射
 	 * 与上一个map，只是键和值反过来存而已
 	 */
-	private Map<String, String> columnFieldMap = new HashMap<String, String>();
+	private Map<String, String> columnFieldMap = new HashMap<>();
 	
 	/**
 	 * 不能重复的字段映射
 	 * 只有字段添加了@NoRepeat注解，才会把字段名作为键，字段的value作为值，存入这个map里面
 	 */
-	private Map<String, String> noRepeatMap = new HashMap<String, String>();
+	private Map<String, String> noRepeatMap = new HashMap<>();
 	
 	/**
 	 * 可以修改的字段集合
 	 * 没有添加@Immtable注解的字段，才会加入到这个map里面
 	 */
-	private Set<String> modifiableField = new HashSet<String>();
+	private Set<String> modifiableField = new HashSet<>();
 	
 	/**
 	 * 限制删除的字段映射
 	 * 添加了@NoDeletion注解的字段，字段名作键，注解的value作值，存入这个map
 	 */
-	private Map<String, String> noDeletionMap = new HashMap<String, String>();
+	private Map<String, String> noDeletionMap = new HashMap<>();
 	
 	/**
 	 * 本类查询条件映射
@@ -85,7 +85,7 @@ public class AnalysisClass {
 	 * 以注解的param作为键，以字段对应的表的列名，加上前缀"t0."，再拼接注解的exp，作为值，存入这个map中
 	 * 如果没有param的值，则默认为空字符串，那就以字段的名称作为键存入map中
 	 */
-	private Map<String, String> selfSearchExpMap = new HashMap<String, String>();
+	private Map<String, String> selfSearchExpMap = new HashMap<>();
 	
 	/**
 	 * 来自于其它类的查询条件映射
@@ -94,13 +94,13 @@ public class AnalysisClass {
 	 * 而这里的前缀，以字段在类的定义里的顺序乘以10得到，比如，字段在类的定义里的顺序是在第6，那么前缀就是"t60."
 	 * 在通用的查询方法里面，就是用t60作为关联类对应的表的别名
 	 */
-	private Map<String, String> otherSearchExpMap= new HashMap<String, String>();
+	private Map<String, String> otherSearchExpMap= new HashMap<>();
 	
 	/**
 	 * 统计注解映射
 	 * 键是字段名，值是解析后的聚合函数表达式
 	 */
-	private Map<String, String> statisticsMap = new HashMap<String, String>();
+	private Map<String, String> statisticsMap = new HashMap<>();
 	
 	/**
 	 * 字段与类的映射
@@ -110,25 +110,25 @@ public class AnalysisClass {
 	 * 比如字段定义为：private List<Item> items;就可以通过字段的定义，来获取Item类
 	 * 如果写成：private List Items;那么是没法知道这个字段是关联哪个类的
 	 */
-	private Map<String, Class<?>> fieldAsClassMap = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> fieldAsClassMap = new HashMap<>();
 	
 	/**
 	 * 在@Mapping注解里，value是一个字符串数组，这个数据，用了一个类来解析，就是MapClass
 	 * 这个map就是存放字段与MapClass的映射关系的
 	 */
-	private Map<String, MapClass> mapClassMap = new HashMap<String, MapClass>();
+	private Map<String, MapClass> mapClassMap = new HashMap<>();
 	
 	/**
 	 * 字段与字段的序号的映射
 	 * 字段关联了另一个类，多表关联查询时，另一个表取别名，需要通过这个序号来指定
 	 */
-	private Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
+	private Map<String, Integer> fieldIndexMap = new HashMap<>();
 	
 	/**
 	 * 关联其它类，其它类的查询条件可能有多个，所以其它类的查询条件的键，要放到一个集合里面
 	 * 以字段的序号为键，以集合为值，保存到这个map里面
 	 */
-	private Map<Integer, Set<String>> indexForOtherSearchList = new HashMap<Integer, Set<String>>();
+	private Map<Integer, Set<String>> indexForOtherSearchList = new HashMap<>();
 	
 	public AnalysisClass(){}
 	
@@ -204,7 +204,7 @@ public class AnalysisClass {
 					setManyToMany(field, index, mapping.value());
 					break;
 				default:
-					System.out.println("异常数据！");
+					
 				}
 			}
 		}
@@ -217,10 +217,10 @@ public class AnalysisClass {
 		
 		fieldAsClassMap.put(fieldName, KingUtils.getEntryType(field));
 		
-		Set<String> searches = new HashSet<String>();
+		Set<String> searches = new HashSet<>();
 		AnalysisClass otherAnalysisClass = Domain.getAnalysisClass(KingUtils.getEntryType(field));
 		for(Map.Entry<String, String> entry : otherAnalysisClass.getSelfSearchExpMap().entrySet()){
-			String value = new String(entry.getValue());
+			String value = String.valueOf(entry.getValue());
 			value = value.replace("t0", "t"+(index+1));
 			otherSearchExpMap.put(entry.getKey(), value);
 			searches.add(entry.getKey());

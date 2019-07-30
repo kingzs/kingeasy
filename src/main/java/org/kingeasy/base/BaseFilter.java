@@ -36,7 +36,7 @@ public class BaseFilter implements Filter {
 		if(packageName == null || "".equals(packageName)){
 			Domain.setRoadAsClass(new HashMap<>());
 		}else{
-			Domain.setRoadAsClass(new AnnotationScanner().scan(packageName));
+			Domain.setRoadAsClass(new AnnotationScanner(packageName).getRoadAsClassMap());
 		}
 	}
 
@@ -79,6 +79,10 @@ public class BaseFilter implements Filter {
 					} catch (SecurityException e) {
 						e.printStackTrace();
 					}
+				}
+				
+				if(method == null){
+					throw new KingRuntimeException("方法配置错误");
 				}
 				
 				Map<String, Object> paramMap = new HashMap<String, Object>();

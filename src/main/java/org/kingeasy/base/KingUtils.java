@@ -228,7 +228,7 @@ public class KingUtils {
 	}
 	
 	public static Object toObject(StringBuffer buffer){
-		trim(buffer);
+		buffer = trim(buffer);
 		if(buffer.length() == 0){
 			return "";
 		}
@@ -312,7 +312,7 @@ public class KingUtils {
 	}
 	
 	public static StringBuffer trimLeftComma(StringBuffer buffer){
-		trim(buffer);
+		buffer = trim(buffer);
 		if(buffer.length()>0 && buffer.charAt(0) == ','){
 			return buffer.delete(0, 1);
 		}

@@ -2,10 +2,8 @@ package org.kingeasy.base;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -13,47 +11,33 @@ import java.util.jar.JarFile;
 import org.kingeasy.annotation.RoadMapping;
 
 public class AnnotationScanner {
-
-	public List<String> classNames = new ArrayList<String>();
+	
+	private Map<String, Class<?>> roadAsClassMap = new HashMap<>();
 	
 	public AnnotationScanner(){}
 	
-	public Map<String, Class<?>> scan(String packageNames){
-		Map<String, Class<?>> roadAsClassMap = new HashMap<String, Class<?>>();
+	public AnnotationScanner(String packageNames){
+		scan(packageNames);
+	}
+	
+	public void scan(String packageNames){
 		if(packageNames == null){
-			return roadAsClassMap;
+			return;
 		}
 		packageNames = packageNames.trim();
 		if("".equals(packageNames)){
-			return roadAsClassMap;
+			return;
 		}
 		String[] packageNameArray = packageNames.split("\\s*,\\s*");
-		for(String packageName : packageNameArray){
-			roadAsClassMap.putAll(scanOne(packageName));	
-		}
-		return roadAsClassMap;
-	}
-	
-	private Map<String, Class<?>> scanOne(String packageName){
-		Map<String, Class<?>> roadAsClass = new HashMap<String, Class<?>>();
+		
 		try {
 			String projectPath = new File("").getCanonicalPath();
-			findClass(projectPath, packageName);
-			for(String className : classNames){
-				Class<?> clazz = Class.forName(className);
-				if(clazz.isAnnotationPresent(RoadMapping.class)){
-					roadAsClass.put(clazz.getDeclaredAnnotation(RoadMapping.class).value(), clazz);
-				}else{
-					roadAsClass.put(clazz.getSimpleName().toLowerCase(), clazz);
-				}
+			for(String packageName : packageNameArray){
+				findClass(projectPath, packageName);	
 			}
 		} catch (IOException e) {
-			roadAsClass.clear();
-		} catch (ClassNotFoundException e) {
-			roadAsClass.clear();
+			e.printStackTrace();
 		}
-		classNames.clear();
-		return roadAsClass;
 	}
 	
 	private void findClass(String path, String packageName){
@@ -84,7 +68,7 @@ public class AnnotationScanner {
 				JarEntry jarEntry = jars.nextElement();
 				String jarEntryName = jarEntry.getName();
 				if(jarEntryName.startsWith(packageName) && jarEntryName.endsWith(".class")){
-					classNames.add(jarEntryName.replace(".class", "").replace("/", "."));
+					putRoadAsClassMap(jarEntryName.replace(".class", "").replace("/", "."));
 				}
 			}
 		} catch (IOException e) {
@@ -106,9 +90,30 @@ public class AnnotationScanner {
 			if(tempFile.isDirectory()){
 				findClassByDir(tempFile, packageName + "." + tempFile.getName());
 			}else if(tempFile.getName().endsWith(".class")){
-				classNames.add(packageName + "." + tempFile.getName().replace(".class", ""));
+				String classAllName = packageName + "." + tempFile.getName().replace(".class", "");
+				putRoadAsClassMap(classAllName);
 			}
 		}
+	}
+	
+	private void putRoadAsClassMap(String classAllName){
+		try {
+			Class<?> clazz = Class.forName(classAllName);
+			String road = null;
+			if(clazz.isAnnotationPresent(RoadMapping.class)){
+				road = clazz.getDeclaredAnnotation(RoadMapping.class).value();
+			}else{
+				road = clazz.getSimpleName().toLowerCase();
+			}
+			
+			roadAsClassMap.put(road, clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Map<String, Class<?>> getRoadAsClassMap(){
+		return roadAsClassMap;
 	}
 	
 }

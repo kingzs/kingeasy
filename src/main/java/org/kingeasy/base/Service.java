@@ -322,8 +322,6 @@ public class Service {
 			kData.close();
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (KingException e) {
