@@ -18,9 +18,24 @@ public class AnnotationScanner {
 	
 	public AnnotationScanner(){}
 	
-	public Map<String, Class<?>> scan(String packageName){
+	public Map<String, Class<?>> scan(String packageNames){
+		Map<String, Class<?>> roadAsClassMap = new HashMap<String, Class<?>>();
+		if(packageNames == null){
+			return roadAsClassMap;
+		}
+		packageNames = packageNames.trim();
+		if("".equals(packageNames)){
+			return roadAsClassMap;
+		}
+		String[] packageNameArray = packageNames.split("\\s*,\\s*");
+		for(String packageName : packageNameArray){
+			roadAsClassMap.putAll(scanOne(packageName));	
+		}
+		return roadAsClassMap;
+	}
+	
+	private Map<String, Class<?>> scanOne(String packageName){
 		Map<String, Class<?>> roadAsClass = new HashMap<String, Class<?>>();
-		if(packageName == null) return roadAsClass;
 		try {
 			String projectPath = new File("").getCanonicalPath();
 			findClass(projectPath, packageName);
