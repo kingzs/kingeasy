@@ -42,7 +42,7 @@ public class ServiceTest {
 			System.out.println(e.getMessage());
 		}
 		
-		//删除时，实际上只要主键属性有值就可以
+		//删除数据，有两种方法，一种是直接传入对象，另一种是传入主键的值和类文件
 		Goods delGoods = new Goods();
 		delGoods.setId(23);
 		try {

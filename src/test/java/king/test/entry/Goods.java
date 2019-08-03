@@ -173,8 +173,8 @@ public class Goods {
 	}
 	@Override
 	public String toString() {
-		return "Goods [id=" + id + ", name=" + name + ", image_addr=" + image_addr + ", price=" 
-				+ price + ", stock=" + stock + ", \nitems=" + getItems() + ", \ngroups=" + getGroups() + "]";
+		return "\nGoods [id=" + id + ", name=" + name + ", image_addr=" + image_addr + ", price=" 
+				+ price + ", stock=" + stock + ", items=" + items + ", groups=" + groups + "]";
 	}
 	
 }
